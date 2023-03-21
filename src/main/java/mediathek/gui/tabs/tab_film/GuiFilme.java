@@ -1024,6 +1024,9 @@ public class GuiFilme extends AGuiTabPanel {
 
             JPopupMenu jPopupMenu = new JPopupMenu();
 
+            var itemBlackThema = new JMenuItem("Thema in die Blacklist einfügen");
+            itemBlackThema.addActionListener(beobBlacklistThema);
+            jPopupMenu.add(itemBlackThema);
             jPopupMenu.add(miPlay);
             jPopupMenu.add(miSave);
             jPopupMenu.add(miBookmark);
@@ -1096,17 +1099,17 @@ public class GuiFilme extends AGuiTabPanel {
             JMenu submenueBlack = new JMenu("Blacklist");
             jPopupMenu.add(submenueBlack);
             // anlegen
-            var itemBlackSender = new JMenuItem("Sender in die Blacklist einfügen");
-            itemBlackSender.addActionListener(beobBlacklistSender);
+            //var itemBlackSender = new JMenuItem("Sender in die Blacklist einfügen");
+            //itemBlackSender.addActionListener(beobBlacklistSender);
 
-            var itemBlackThema = new JMenuItem("Thema in die Blacklist einfügen");
-            itemBlackThema.addActionListener(beobBlacklistThema);
+            //var itemBlackThema = new JMenuItem("Thema in die Blacklist einfügen");
+            //itemBlackThema.addActionListener(beobBlacklistThema);
 
-            var itemBlackSenderThema = new JMenuItem("Sender und Thema in die Blacklist einfügen");
-            itemBlackSenderThema.addActionListener(beobBlacklistSenderThema);
-            submenueBlack.add(itemBlackSender);
+            //var itemBlackSenderThema = new JMenuItem("Sender und Thema in die Blacklist einfügen");
+            //itemBlackSenderThema.addActionListener(beobBlacklistSenderThema);
+            //submenueBlack.add(itemBlackSender);
             submenueBlack.add(itemBlackThema);
-            submenueBlack.add(itemBlackSenderThema);
+            //submenueBlack.add(itemBlackSenderThema);
 
             res.ifPresent(film -> {
                 jDownloadHelper.installContextMenu(film, jPopupMenu);
