@@ -901,9 +901,10 @@ public class GuiFilme extends AGuiTabPanel {
         private final BeobPrint beobPrint = new BeobPrint();
         private final BeobAbo beobAbo = new BeobAbo(false);
         private final BeobAbo beobAboMitTitel = new BeobAbo(true);
-        private final BeobBlacklist beobBlacklistSender = new BeobBlacklist(true, false);
-        private final BeobBlacklist beobBlacklistSenderThema = new BeobBlacklist(true, true);
-        private final BeobBlacklist beobBlacklistThema = new BeobBlacklist(false, true);
+        private final BeobBlacklist beobBlacklistSender = new BeobBlacklist(true, false, false);
+        private final BeobBlacklist beobBlacklistSenderThema = new BeobBlacklist(true, true, false);
+        private final BeobBlacklist beobBlacklistThema = new BeobBlacklist(false, true, false);
+        private final BeobBlacklist beobBlacklistTitle = new BeobBlacklist(false, false, true);
         private final JMenuItem miPlay = createPlayItem();
         private final JMenuItem miSave = createSaveFilmItem();
         private final JMenuItem miBookmark = createBookmarkFilmItem();
@@ -1027,6 +1028,12 @@ public class GuiFilme extends AGuiTabPanel {
             var itemBlackThema = new JMenuItem("Thema in die Blacklist einfügen");
             itemBlackThema.addActionListener(beobBlacklistThema);
             jPopupMenu.add(itemBlackThema);
+
+            var itemBlackTitle = new JMenuItem("Titel in die Blacklist einfügen");
+            itemBlackTitle.addActionListener(beobBlacklistTitle);
+            jPopupMenu.add(itemBlackTitle);
+            jPopupMenu.addSeparator();
+
             jPopupMenu.add(miPlay);
             jPopupMenu.add(miSave);
             jPopupMenu.add(miBookmark);
@@ -1099,17 +1106,21 @@ public class GuiFilme extends AGuiTabPanel {
             JMenu submenueBlack = new JMenu("Blacklist");
             jPopupMenu.add(submenueBlack);
             // anlegen
-            //var itemBlackSender = new JMenuItem("Sender in die Blacklist einfügen");
-            //itemBlackSender.addActionListener(beobBlacklistSender);
+            var itemBlackSender = new JMenuItem("Sender in die Blacklist einfügen");
+            itemBlackSender.addActionListener(beobBlacklistSender);
 
-            //var itemBlackThema = new JMenuItem("Thema in die Blacklist einfügen");
-            //itemBlackThema.addActionListener(beobBlacklistThema);
+            var itemBlackThema2 = new JMenuItem("Thema in die Blacklist einfügen");
+            itemBlackThema2.addActionListener(beobBlacklistThema);
 
-            //var itemBlackSenderThema = new JMenuItem("Sender und Thema in die Blacklist einfügen");
-            //itemBlackSenderThema.addActionListener(beobBlacklistSenderThema);
-            //submenueBlack.add(itemBlackSender);
-            submenueBlack.add(itemBlackThema);
-            //submenueBlack.add(itemBlackSenderThema);
+            var itemBlackSenderThema = new JMenuItem("Sender und Thema in die Blacklist einfügen");
+            itemBlackSenderThema.addActionListener(beobBlacklistSenderThema);
+            var itemBlackTitle2 = new JMenuItem("Titel in die Blacklist einfügen");
+            itemBlackTitle2.addActionListener(beobBlacklistTitle);
+
+            submenueBlack.add(itemBlackTitle2);
+            submenueBlack.add(itemBlackThema2);
+            submenueBlack.add(itemBlackSenderThema);
+            submenueBlack.add(itemBlackSender);
 
             res.ifPresent(film -> {
                 jDownloadHelper.installContextMenu(film, jPopupMenu);
@@ -1374,32 +1385,31 @@ public class GuiFilme extends AGuiTabPanel {
 
             private final boolean sender;
             private final boolean thema;
+            private final boolean title;
 
-            BeobBlacklist(boolean sender, boolean thema) {
+            BeobBlacklist(boolean sender, boolean thema, boolean title) {
                 this.sender = sender;
                 this.thema = thema;
+                this.title = title;
             }
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 final int nr = tabelle.rowAtPoint(p);
                 if (nr >= 0) {
-                    Optional<DatenFilm> res = getFilm(nr);
-                    res.ifPresent(
-                            film -> {
-                                final String thema = film.getThema();
-                                final String sender = film.getSender();
-                                // Blackliste für alle Fälle einschalten, notify kommt beim add()
-                                MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.TRUE.toString());
-                                var listeBlacklist = daten.getListeBlacklist();
-                                if (!this.sender) {
-                                    listeBlacklist.add(new BlacklistRule("", thema, "", ""));
-                                } else if (!this.thema) {
-                                    listeBlacklist.add(new BlacklistRule(sender, "", "", ""));
-                                } else {
-                                    listeBlacklist.add(new BlacklistRule(sender, thema, "", ""));
-                                }
-                            });
+                    if (this.thema || this.title || this.sender) {
+                        Optional<DatenFilm> res = getFilm(nr);
+                        res.ifPresent(
+                                film -> {
+                                    final String thema = this.thema ? film.getThema() : "";
+                                    final String sender = this.sender ? film.getSender() : "";
+                                    final String title = this.title ? film.getTitle() : "";
+                                    // Blackliste für alle Fälle einschalten, notify kommt beim add()
+                                    MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.TRUE.toString());
+                                    var listeBlacklist = daten.getListeBlacklist();
+                                    listeBlacklist.add(new BlacklistRule(sender, thema, title, ""));
+                                });
+                    }
                 }
             }
         }

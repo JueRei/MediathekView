@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Konstanten {
     public static final long MINIMUM_MEMORY_THRESHOLD = 768 * FileUtils.ONE_MB;
-    public static final Version MVVERSION = new Version(13,9,2);
+    public static final Version MVVERSION = new Version(13,9,3);
     /**
      * Is this a nightly or a production build?
      */
