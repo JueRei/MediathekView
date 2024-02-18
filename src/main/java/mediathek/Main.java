@@ -300,9 +300,11 @@ public class Main {
         if ((useShenandoahGC > 0)
                 && (shenandoahHeuristics > 0)
                 && (stringDedup > 0)
-                && (maxRamPct > 0)
-                && (mxParamCount == 0))
-            correctParameters = true;
+                //&& (maxRamPct > 0)
+                //&& (mxParamCount == 0)
+        ) {
+	        correctParameters = true;
+        }
 
         if (SystemUtils.IS_OS_LINUX) {
             if (addOpens == 0)
@@ -323,6 +325,7 @@ public class Main {
             if (SystemUtils.IS_OS_LINUX) {
                 message += "<li><b>--add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED</b></li>";
             }
+            message += "<li>addOpens="+addOpens+" useShenandoahGC="+useShenandoahGC+" shenandoahHeuristics="+shenandoahHeuristics+" stringDedup="+stringDedup+"</li>";
 
             message += "</ul><br/>" +
                         "<b>-Xmx</b> sollte nicht mehr genutzt werden!" +

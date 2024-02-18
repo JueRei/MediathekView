@@ -203,7 +203,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
             if (metaData != null) {
                 final Node versionNode = metaData.item(0);
                 if (versionNode == null || !versionNode.getTextContent().equalsIgnoreCase("v1.0")) {
-                    throw new Exception("Unknown TTML file version");
+                    throw new Exception("Unknown TTML file version ttmlFilePath="+ttmlFilePath.toString());
                 }
             } else {
                 throw new Exception("Unknown File Format");
@@ -213,7 +213,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
             buildFilmList();
             ret = true;
         } catch (Exception ex) {
-            logger.error("File: " + ttmlFilePath, ex);
+            logger.info("Exception expected for File: " + ttmlFilePath, ex);
             ret = false;
         }
         return ret;
